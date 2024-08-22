@@ -1,0 +1,29 @@
+name: Create Torrent
+
+on: [push]
+
+jobs:
+  create-torrent:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install torrenttools
+      run: |
+        sudo add-apt-repository ppa:fbdtemme/torrenttools
+        sudo apt-get update
+        sudo apt-get install torrenttools
+
+    - name: Download file
+      run: aria2c -x 16 -o "torrent2" "https://server-hls2-stream-c22.cdn-tube.xyz/v/01/00029/cmmx3ljd7w5j_h/[TopCinema].John.Wick.Chapter.4.2023.720p.BluRay.mp4?t=NRXND6GnWodIam1wZy0XfCldbTUzg_ggQV2RzViJnBU&s=1724369529&e=86400&f=146747&sp=1000&i=0.0https://server-hls2-stream-c22.cdn-tube.xyz/v/01/00029/cmmx3ljd7w5j_h/[TopCinema].John.Wick.Chapter.4.2023.720p.BluRay.mp4?t=NRXND6GnWodIam1wZy0XfCldbTUzg_ggQV2RzViJnBU&s=1724369529&e=86400&f=146747&sp=1000&i=0.0"
+
+    - name: Create torrent
+      run: torrenttools create -o "output.torrent" -w "https://server-hls2-stream-c22.cdn-tube.xyz/v/01/00029/cmmx3ljd7w5j_h/[TopCinema].John.Wick.Chapter.4.2023.720p.BluRay.mp4?t=NRXND6GnWodIam1wZy0XfCldbTUzg_ggQV2RzViJnBU&s=1724369529&e=86400&f=146747&sp=1000&i=0.0" "torrent2"
+
+    - name: Upload torrent file
+      uses: actions/upload-artifact@v2
+      with:
+        name: torrent-file
+        path: output.torrent
